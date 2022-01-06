@@ -1,0 +1,39 @@
+{
+    "name": "Player Actions",
+    "maps": [
+        {
+            "name": "Controls",
+            "id": "a5e37215-5022-4c47-87f4-98ab4269d551",
+            "actions": [
+                {
+                    "name": "Move Direction",
+                    "type": "Value",
+                    "id": "794e64d2-610d-4941-886e-5280d7c8d0ff",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "9ec76de3-f7ab-43c0-ba5c-524cad806a7e",
+                    "path": "<Gamepad>/dpad",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Xbox Controller",
+                    "action": "Move Direction",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": [
+        {
+            "name": "Xbox Controller",
+            "bindingGroup": "Xbox Controller",
+            "devices": []
+        }
+    ]
+}

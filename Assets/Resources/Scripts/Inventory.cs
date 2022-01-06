@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.U2D;
+using UnityEngine.InputSystem;
 
 public class Inventory : MonoBehaviour
 {
@@ -9,6 +10,12 @@ public class Inventory : MonoBehaviour
     [Tooltip("Inventory Slots Size")]
     [SerializeField]
     private Vector2 inventorySize;
+    [Tooltip("Selector Transform")]
+    [SerializeField]
+    private Transform selectorTransform;
+    [Tooltip("Selected Slot With the Selector")]
+    [SerializeField]
+    private Vector2 selectedSlot;
 
     [Header("Slots Configuration")]
     [Tooltip("Inventory Slots")]
@@ -25,6 +32,7 @@ public class Inventory : MonoBehaviour
     private float slotDistance = 19;
 
     SpriteAtlas ItemsAtlas;
+    PlayerActions playerInput;
 
     public Sprite terstImage;
     private void Awake()
@@ -32,6 +40,7 @@ public class Inventory : MonoBehaviour
         ItemsAtlas = (SpriteAtlas)Resources.Load("Sprites/Item Atlas");
         transform.DestroyAllChildrean();
         CreateSlots();
+        SetInputs();
     }
 
     private void CreateSlots()
@@ -68,9 +77,22 @@ public class Inventory : MonoBehaviour
         }
     }
 
-#if UNITY_EDITOR
-    private void OnValidate()
+    private void ChangeSelection(Vector2 xy)
     {
+        selectedSlot += new Vector2(xy.x, -xy.y);
+        selectedSlot.x = Mathf.Repeat(selectedSlot.x, inventorySize.x);
+        selectedSlot.y = Mathf.Repeat(selectedSlot.y, inventorySize.y);
+        float inventoryIndex = selectedSlot.x + selectedSlot.y * inventorySize.x;
+        selectorTransform.position = slots[(int)inventoryIndex].transform.position;
     }
-#endif
+
+    private void SetInputs()
+    {
+        playerInput = new PlayerActions();
+        playerInput.Controls.Enable();
+        playerInput.Controls.MoveDirection.started += ctx => 
+        {
+            ChangeSelection(ctx.ReadValue<Vector2>());
+        };
+    }
 }
