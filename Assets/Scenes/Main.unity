@@ -436,7 +436,7 @@ MonoBehaviour:
   m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 16
   m_ScaleFactor: 20
-  m_ReferenceResolution: {x: 160, y: 90}
+  m_ReferenceResolution: {x: 320, y: 180}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 1
   m_PhysicalUnit: 3
@@ -603,7 +603,7 @@ MonoBehaviour:
   inventorySize: {x: 6, y: 3}
   slots: []
   slotsItems: []
-  slotPadding: {x: -48, y: -19}
+  slotPadding: {x: -48, y: 19}
   slotDistance: 19
   terstImage: {fileID: 21300000, guid: 42259c60f715ed14aa3e8da718860fc0, type: 3}
 --- !u!1 &1852629417
@@ -663,7 +663,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: ae6c8c46e07b7ce4fa44e7a394359209, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 4c573931dc8753a4fbbdbc7f54e78bff, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

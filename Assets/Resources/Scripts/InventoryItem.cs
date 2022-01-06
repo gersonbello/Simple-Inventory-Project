@@ -8,8 +8,4 @@ public class InventoryItem : ScriptableObject
 {
     public string itemName;
     public Sprite itemSprite;
-    [HideInInspector]
-    public Vector2 inventoryPosition;
-    [HideInInspector]
-    public int inventoryID;
 }

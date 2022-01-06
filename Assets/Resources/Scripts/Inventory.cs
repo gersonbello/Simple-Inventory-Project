@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -56,10 +54,13 @@ public class Inventory : MonoBehaviour
             int xPosition = (int)((x - x % inventorySize.x) / inventorySize.x);
             Vector2 xyPosition = new Vector2(x - xPosition * inventorySize.x, xPosition);
 
-            slotsItems[x] = (InventoryItem)items[0];
-            slotsItems[x].inventoryID = x;
-            slotsItems[x].inventoryPosition = xyPosition;
+            slotsItems[x] = (InventoryItem)items[Random.Range(0, items.Length)];
+            InventorySlot slot = slots[x].AddComponent<InventorySlot>();
+            slot.slotItem = slotsItems[x];
+            slot.inventoryID = x;
+            slot.inventoryPosition = xyPosition;
 
+            xyPosition.y *= -1;
             slots[x].transform.localPosition = slotPadding + xyPosition * slotDistance;
             Image slotImage = slots[x].AddComponent<Image>();
             slotImage.sprite = ItemsAtlas.GetSprite(slotsItems[x].itemSprite.name);
