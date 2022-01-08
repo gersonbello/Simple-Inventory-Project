@@ -7,6 +7,11 @@ public class GameController : MonoBehaviour
     static GameController _gc;
 
     public List<Vector2> applicationResolutions = new List<Vector2>();
+
+    public AnimationCurve popUpAnimationCurve;
+    public AnimationCurve popInAnimationCurve;
+    public AnimationCurve popOutAnimationCurve;
+
     int currentResolution;
 
     private void Awake()
@@ -27,7 +32,7 @@ public class GameController : MonoBehaviour
     {
         currentResolution++;
         currentResolution = (int)Mathf.Repeat(currentResolution, applicationResolutions.Count);
-        Screen.SetResolution((int)applicationResolutions[currentResolution].x, (int)applicationResolutions[currentResolution].y, FullScreenMode.FullScreenWindow);
+        Screen.SetResolution((int)applicationResolutions[currentResolution].x, (int)applicationResolutions[currentResolution].y, Screen.fullScreenMode);
         
     }
 }

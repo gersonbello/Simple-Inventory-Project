@@ -7,40 +7,49 @@ using TMPro;
 public class Inventory : MonoBehaviour
 {
     [Header("Inventory Configuration")]
-    [Tooltip("Inventory Slots Size")]
+    [Tooltip("Inventory slots size")]
     [SerializeField]
     private Vector2 inventorySize;
-    [Tooltip("Selector Transform")]
+    [Tooltip("Selector that indicates the current slot")]
     [SerializeField]
     private Transform selectorTransform;
-    [Tooltip("Selected Slot With the Selector")]
+    [Tooltip("Selector that Indicates the selected slot")]
+    [SerializeField]
+    private Transform selectedSelectorTransform;
+    [Tooltip("Selector that indicates the picked object")]
+    [SerializeField]
+    private Transform pickedObjectIndicator;
+    [Tooltip("Image of the picked object")]
+    [SerializeField]
+    private Image pickedItemRepresentation;
+    [Tooltip("Selected slot with the selector")]
     [SerializeField]
     private Vector2 selectedSlot;
-    [Tooltip("Selected Slot With the Selector")]
+    [Tooltip("Selected slot with the selector")]
     [SerializeField]
     private TextMeshProUGUI itemNameText;
 
     [Header("Slots Configuration")]
-    [Tooltip("Inventory Slots")]
+    [Tooltip("Inventory slots")]
     [SerializeField]
     private List<GameObject> slots = new List<GameObject>();
-    [Tooltip("Inventory Items")]
+    [Tooltip("Inventory items")]
     [SerializeField]
     private List<InventoryItem> slotsItems;
-    [Tooltip("Inventory Slots Padding From Rect Transform")]
+    [Tooltip("Inventory slots padding from rect transform")]
     [SerializeField]
     private Vector2 slotPadding;
-    [Tooltip("Distance Between Slots")]
+    [Tooltip("Distance between slots")]
     [SerializeField]
     private float slotDistance = 19;
-    [Tooltip("Selected Item")]
+    [Tooltip("Selected item")]
     [SerializeField]
     private InventorySlot selectedItem;
 
     SpriteAtlas ItemsAtlas;
     PlayerActions playerInput;
     object[] items;
-    int selectedInventoryIndex
+    int selectorInventoryIndex
     {
         get { return GetInventoryIndex(selectedSlot); }
     }
@@ -60,6 +69,7 @@ public class Inventory : MonoBehaviour
     {
         slots.Clear();
         slotsItems.Clear();
+        StopAllCoroutines();
         transform.DestroyAllChildrean();
         while (slots.Count < inventorySize.x * inventorySize.y)
         {
@@ -68,7 +78,7 @@ public class Inventory : MonoBehaviour
             newSlot.transform.position = new Vector3();
             newSlot.transform.localScale = new Vector3(1, 1, 1);
             slots.Add(newSlot);
-            slotsItems.Add(new InventoryItem());
+            slotsItems.Add(null);
         }
 
         for (int x = 0; x < slots.Count; x++)
@@ -76,15 +86,28 @@ public class Inventory : MonoBehaviour
             int xPosition = (int)((x - x % inventorySize.x) / inventorySize.x);
             Vector2 xyPosition = new Vector2(x - xPosition * inventorySize.x, xPosition);
 
-            slotsItems[x] = (InventoryItem)items[Random.Range(0, items.Length)];
             InventorySlot slot = slots[x].AddComponent<InventorySlot>();
-            slot.slotItem = slotsItems[x];
-            slot.inventoryID = x;
+            slots[x].AddComponent<Image>();
+
             slot.inventoryPosition = xyPosition;
+            slot.inventoryID = x;
 
             xyPosition.y *= -1;
+
             slots[x].transform.localPosition = slotPadding + xyPosition * slotDistance;
-            Image slotImage = slots[x].AddComponent<Image>();
+        }
+
+        for (int x = 0; x < 5; x++)
+        {
+            int randomSlot = Random.Range(0, slots.Count);
+            while (slotsItems[randomSlot] != null) randomSlot = Random.Range(0, slots.Count);
+
+            slotsItems[randomSlot] = (InventoryItem)items[Random.Range(0, items.Length)];
+
+            InventorySlot slot = slots[randomSlot].GetComponent<InventorySlot>();
+            slot.slotItem = slotsItems[randomSlot];
+
+            StartCoroutine(slots[randomSlot].transform.AnimateScale(.15f, GameController.gc.popUpAnimationCurve));
         }
 
         UpdateInventory();
@@ -92,35 +115,56 @@ public class Inventory : MonoBehaviour
 
     private void ChangeSelection(Vector2 xy)
     {
-        selectedSlot += new Vector2(xy.x, -xy.y);
-        selectedSlot.x = Mathf.Repeat(selectedSlot.x, inventorySize.x);
-        selectedSlot.y = Mathf.Repeat(selectedSlot.y, inventorySize.y);
-        int slotIndex = selectedInventoryIndex;
+        selectedSlot += new Vector2(xy.x,-xy.y);
+        selectedSlot.x = (int)Mathf.Repeat(selectedSlot.x, inventorySize.x);
+        selectedSlot.y = (int)Mathf.Repeat(selectedSlot.y, inventorySize.y);
+
+        int slotIndex = selectorInventoryIndex;
+        
         selectorTransform.position = slots[slotIndex].transform.position;
+
+
         if (slotsItems[slotIndex] != null) itemNameText.text = slotsItems[slotIndex].itemName;
         else itemNameText.text = "";
     }
 
     private void SelectSlot()
     {
+        selectorTransform.localScale = new Vector3(1, 1, 1);
+        StartCoroutine(selectorTransform.AnimateScale(.15f, GameController.gc.popInAnimationCurve));
+        int slotIndex = selectorInventoryIndex;
+
         if (selectedItem != null)
         {
-            if (slots[(int)selectedInventoryIndex] != null)
-            {
-                InventoryItem itemToChangeSlot = slotsItems[selectedInventoryIndex];
-                InventorySlot slotToReciveItem = selectedItem.GetComponent<InventorySlot>();
+            InventoryItem itemToChangeSlot = slotsItems[slotIndex];
+            InventorySlot slotToReciveItem = selectedItem;
 
-                slotsItems[selectedInventoryIndex] = selectedItem.GetComponent<InventorySlot>().slotItem;
-                slots[selectedInventoryIndex].GetComponent<InventorySlot>().slotItem = slotsItems[selectedInventoryIndex];
+            slotsItems[slotIndex] = selectedItem.GetComponent<InventorySlot>().slotItem;
+            slots[slotIndex].GetComponent<InventorySlot>().slotItem = slotsItems[slotIndex];
+            StartCoroutine(slots[slotIndex].transform.AnimateScale(.15f, GameController.gc.popUpAnimationCurve));
 
-                slotToReciveItem.slotItem = itemToChangeSlot;
-                slotsItems[slotToReciveItem.inventoryID] = itemToChangeSlot;
+            slotToReciveItem.slotItem = itemToChangeSlot;
+            slotsItems[selectedItem.inventoryID] = itemToChangeSlot;
 
-                selectedItem = null;
-            }
+            selectedItem = null;
+            selectedSelectorTransform.gameObject.SetActive(false);
+            pickedObjectIndicator.gameObject.SetActive(false);
+
         } else
         {
-            selectedItem = slots[selectedInventoryIndex].GetComponent<InventorySlot>();
+            if (slotsItems[slotIndex] != null)
+            {
+                selectedItem = slots[slotIndex].GetComponent<InventorySlot>();
+
+                selectedSelectorTransform.gameObject.SetActive(true);
+
+                pickedObjectIndicator.gameObject.SetActive(true);
+                StartCoroutine(pickedObjectIndicator.transform.AnimateScale(.15f, GameController.gc.popUpAnimationCurve));
+
+                pickedItemRepresentation.sprite = selectedItem.slotItem.itemSprite;
+
+                selectedSelectorTransform.transform.position = selectedItem.transform.position;
+            }
         }
 
         UpdateInventory();
@@ -131,10 +175,17 @@ public class Inventory : MonoBehaviour
         if (selectedItem == null) CreateSlots();
         else
         {
+
             InventorySlot slotToBeDeleted = selectedItem.GetComponent<InventorySlot>();
             slotsItems[slotToBeDeleted.inventoryID] = null;
             slotToBeDeleted.slotItem = null;
             selectedItem = null;
+            GameObject popOutAnimObject = Instantiate(slotToBeDeleted.gameObject, slotToBeDeleted.transform);
+            popOutAnimObject.transform.localPosition = new Vector3();
+            StartCoroutine(popOutAnimObject.transform.AnimateScale(.1f, GameController.gc.popOutAnimationCurve, false));
+            selectedSelectorTransform.gameObject.SetActive(false);
+            pickedObjectIndicator.gameObject.SetActive(false);
+
             UpdateInventory();
         }
     }
@@ -171,12 +222,13 @@ public class Inventory : MonoBehaviour
             Image slotImage = slots[x].GetComponent<Image>();
             if (slotsItems[x] != null)
             {
+                slotImage.enabled = true;
                 slotImage.sprite = ItemsAtlas.GetSprite(slotsItems[x].itemSprite.name);
                 slotImage.SetNativeSize();
             }
             else
             {
-                slotImage.sprite = null;
+                slotImage.enabled = false;
             }
         }
     }
