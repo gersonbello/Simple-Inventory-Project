@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fbf363fd86e45e04c827f3655bf8d253, type: 3}
   m_Name: 12
   m_EditorClassIdentifier: 
-  itemName: Armor M
+  itemName: Armor
   itemSprite: {fileID: 21300000, guid: 982e91cd98eed1947a4a8dcc8af42db7, type: 3}
