@@ -12,6 +12,17 @@ public class GameController : MonoBehaviour
     public AnimationCurve popInAnimationCurve;
     public AnimationCurve popOutAnimationCurve;
 
+    AudioSource _audiosource;
+    public AudioSource audioSource 
+    { 
+        get
+        {
+            if (_audiosource == null)
+                _audiosource = GetComponent<AudioSource>();
+            return _audiosource;
+        } 
+    }
+
     int currentResolution;
 
     private void Awake()

@@ -241,11 +241,33 @@ public class @PlayerActions : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""965cdd01-a744-4b99-a33e-58179c34f123"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""A Button"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""2dfae8f5-9ddc-4ade-8986-66de7ba26cb0"",
                     ""path"": ""<Gamepad>/buttonNorth"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Xbox Controller"",
+                    ""action"": ""Y Button"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""459fe52d-39a5-4eab-9540-9b2de8250016"",
+                    ""path"": ""<Keyboard>/delete"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
                     ""action"": ""Y Button"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -282,6 +304,17 @@ public class @PlayerActions : IInputActionCollection, IDisposable
                     ""action"": ""LB+RB"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b157a659-f5e6-4565-906c-d83eb9606e77"",
+                    ""path"": ""<Keyboard>/tab"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""LB+RB"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }

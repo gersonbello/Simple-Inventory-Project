@@ -46,6 +46,20 @@ public class Inventory : MonoBehaviour
     [SerializeField]
     private InventorySlot selectedItem;
 
+    [Header("Audio Configuration")]
+    [Tooltip("Audio for the invetory selector movement")]
+    [SerializeField]
+    private AudioClip moveSelectorAudio;
+    [Tooltip("Audio for selection")]
+    [SerializeField]
+    private AudioClip selectAudio;
+    [Tooltip("Audio for item destruction")]
+    [SerializeField]
+    private AudioClip destroyItemAudio;
+    [Tooltip("Audio for item creation")]
+    [SerializeField]
+    private AudioClip createItemAudio;
+
     SpriteAtlas ItemsAtlas;
     PlayerActions playerInput;
     object[] items;
@@ -54,7 +68,6 @@ public class Inventory : MonoBehaviour
         get { return GetInventoryIndex(selectedSlot); }
     }
 
-    public Sprite terstImage;
     private void Awake()
     {
         items = Resources.LoadAll("Items", typeof(InventoryItem));
@@ -107,9 +120,11 @@ public class Inventory : MonoBehaviour
             InventorySlot slot = slots[randomSlot].GetComponent<InventorySlot>();
             slot.slotItem = slotsItems[randomSlot];
 
+            GameController.gc.audioSource.PlayOneShot(createItemAudio);
             StartCoroutine(slots[randomSlot].transform.AnimateScale(.15f, GameController.gc.popUpAnimationCurve));
         }
 
+        ChangeSelection(new Vector2());
         UpdateInventory();
     }
 
@@ -123,9 +138,13 @@ public class Inventory : MonoBehaviour
         
         selectorTransform.position = slots[slotIndex].transform.position;
 
+        if (selectedItem == null)
+        {
+            if (slotsItems[slotIndex] != null) itemNameText.text = slotsItems[slotIndex].itemName;
+            else itemNameText.text = "";
+        }
 
-        if (slotsItems[slotIndex] != null) itemNameText.text = slotsItems[slotIndex].itemName;
-        else itemNameText.text = "";
+        GameController.gc.audioSource.PlayOneShot(moveSelectorAudio);
     }
 
     private void SelectSlot()
@@ -167,6 +186,7 @@ public class Inventory : MonoBehaviour
             }
         }
 
+        GameController.gc.audioSource.PlayOneShot(selectAudio);
         UpdateInventory();
     }
 
@@ -186,6 +206,7 @@ public class Inventory : MonoBehaviour
             selectedSelectorTransform.gameObject.SetActive(false);
             pickedObjectIndicator.gameObject.SetActive(false);
 
+            GameController.gc.audioSource.PlayOneShot(destroyItemAudio);
             UpdateInventory();
         }
     }
